@@ -139,19 +139,6 @@ export default function Home({ navigation }: any) {
     </View>
   );
 
-  const renderMenuItem = ({ item }: { item: MenuItem }) => (
-    <View style={styles.menuItem}>
-      <View style={styles.menuInfo}>
-        <Text style={styles.menuName}>{item.name}</Text>
-        <Text style={styles.menuDesc} numberOfLines={2}>{item.description}</Text>
-        <Text style={styles.menuPrice}>{item.price}</Text>
-      </View>
-      <View style={styles.menuImageContainer}>
-        <Image source={{ uri: item.image }} style={styles.menuImage} resizeMode="cover" />
-      </View>
-    </View>
-  );
-
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {renderHeader()}
@@ -159,7 +146,7 @@ export default function Home({ navigation }: any) {
         <FlatList
           data={menuData}
           keyExtractor={item => item.name}
-          renderItem={renderMenuItem}
+          renderItem={({ item }) => <MenuItemComponent item={item} />}
           ListHeaderComponent={
             <>
               {renderHero()}
@@ -167,11 +154,34 @@ export default function Home({ navigation }: any) {
             </>
           }
           contentContainerStyle={{ paddingBottom: 20 }}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
       </View>
     </View>
   );
 }
+
+const MenuItemComponent = ({ item }: { item: MenuItem }) => {
+  const [imgSource, setImgSource] = useState({ uri: item.image });
+
+  return (
+    <View style={styles.menuItem}>
+      <View style={styles.menuInfo}>
+        <Text style={styles.menuName}>{item.name}</Text>
+        <Text style={styles.menuDesc} numberOfLines={2}>{item.description}</Text>
+        <Text style={styles.menuPrice}>{item.price}</Text>
+      </View>
+      <View style={styles.menuImageContainer}>
+        <Image
+          source={imgSource}
+          style={styles.menuImage}
+          resizeMode="cover"
+          onError={() => setImgSource({ uri: 'https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/lemonDessert.jpg?raw=true' })}
+        />
+      </View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -183,21 +193,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 15,
     backgroundColor: '#fff',
   },
   logoContainer: {
     flex: 1,
     alignItems: 'center',
-    paddingLeft: 40, // offset avatar width for center
+    paddingLeft: 40,
   },
   logoPlaceholder: {
-    // 
+    //
   },
   logoText: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '800',
     color: '#495E57',
+    letterSpacing: 1,
   },
   avatar: {
     width: 40,
@@ -210,66 +221,75 @@ const styles = StyleSheet.create({
   avatarLabel: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 16,
   },
   hero: {
     backgroundColor: '#495E57',
     padding: 20,
+    paddingBottom: 30,
   },
   heroTitle: {
     color: '#F4CE14',
-    fontSize: 40,
-    fontFamily: 'System', // Use specialized font if available
+    fontSize: 54,
+    fontFamily: 'System',
     fontWeight: 'bold',
+    lineHeight: 54,
   },
   heroSubtitle: {
     color: '#fff',
-    fontSize: 24,
-    marginBottom: 10,
+    fontSize: 32,
+    fontFamily: 'System',
+    fontWeight: '600',
+    marginBottom: 15,
   },
   heroContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   heroDescription: {
-    color: '#fff',
+    color: '#EDEFEE',
     fontSize: 16,
     flex: 1,
     marginRight: 20,
+    lineHeight: 24,
+    fontWeight: '500',
   },
   heroImagePlaceholder: {
-    width: 120,
-    height: 120,
-    backgroundColor: '#AAA', // Placeholder grey
-    borderRadius: 10,
+    width: 130,
+    height: 130,
+    backgroundColor: '#333',
+    borderRadius: 16,
   },
   searchContainer: {
-    marginTop: 10,
+    marginTop: 5,
   },
   searchInput: {
-    backgroundColor: '#fff',
+    backgroundColor: '#EDEFEE',
     borderRadius: 8,
-    padding: 10,
+    padding: 12,
     fontSize: 16,
+    color: '#333',
   },
   categoriesContainer: {
     padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    paddingBottom: 10,
   },
   categoriesTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '800',
     marginBottom: 15,
+    textTransform: 'uppercase',
   },
   categoryScroll: {
     flexDirection: 'row',
+    paddingBottom: 10,
   },
   categoryChip: {
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: '#eee',
-    borderRadius: 20,
+    backgroundColor: '#EDEFEE',
+    borderRadius: 16,
     marginRight: 10,
   },
   categoryChipActive: {
@@ -278,32 +298,40 @@ const styles = StyleSheet.create({
   categoryText: {
     fontWeight: 'bold',
     color: '#495E57',
+    fontSize: 15,
   },
   categoryTextActive: {
-    color: '#F4CE14',
+    color: '#EDEFEE',
   },
   menuItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    alignItems: 'center',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#EDEFEE',
+    marginHorizontal: 20,
   },
   menuInfo: {
     flex: 1,
-    marginRight: 10,
+    marginRight: 15,
   },
   menuName: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: '#000',
   },
   menuDesc: {
-    color: '#666',
+    color: '#495E57',
     marginBottom: 10,
+    fontSize: 15,
+    lineHeight: 20,
   },
   menuPrice: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
     color: '#495E57',
   },
@@ -311,9 +339,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   menuImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-    backgroundColor: '#ccc',
+    width: 90,
+    height: 90,
+    borderRadius: 10,
+    backgroundColor: '#EDEFEE',
   },
 });
